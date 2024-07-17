@@ -1,0 +1,9 @@
+#Tests with REST Client
+
+POST http://localhost:5000/api/verify
+Content-Type: application/json
+
+{
+  "username": "Amy11111",
+  "password": "StrongPassword123"
+}
