@@ -26,9 +26,11 @@ paths:
                   description: The password for the new user
       responses:
         '201':
-          $ref: '#/components/responses/default'
+          $ref: '#/components/responses/201'
         '400':
-          $ref: '#/components/responses/default'
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
   /api/user/verify:
     post:
       tags:
@@ -49,18 +51,59 @@ paths:
                   type: string
                   description: The password for verification
       responses:
-        '200':
-          $ref: '#/components/responses/default'
+        '201':
+          $ref: '#/components/responses/201'
+        '400':
+          $ref: '#/components/responses/400'
         '401':
-          $ref: '#/components/responses/default'
-        '404':
-          $ref: '#/components/responses/default'
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
 components:
   responses:
-    default:
-      description: a default response
+    201:
+      description: 'Success'
       content:
-        application/json:
+        text/plain: 
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                description: Indicates successful operation
+              reason:
+                type: string
+                description: Optional reason for success or failure (if applicable)
+    400:
+      description: 'Bad Request'
+      content:
+        text/plain:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                description: Indicates successful operation
+              reason:
+                type: string
+                description: Optional reason for success or failure (if applicable)
+    401:
+      description: 'Unauthorized'
+      content:
+        text/plain: 
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                description: Indicates successful operation
+              reason:
+                type: string
+                description: Optional reason for success or failure (if applicable)
+    500:
+      description: 'Internal server error'
+      content:
+        text/plain: 
           schema:
             type: object
             properties:

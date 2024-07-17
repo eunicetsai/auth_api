@@ -3,7 +3,7 @@ import re
 from typing import Optional
 from models.user import User
 from repositories.user import UserRepository
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class UserService:
     logging.basicConfig(level=logging.DEBUG)
@@ -14,7 +14,16 @@ class UserService:
     def verify_user(self, username, password):
         
 
-        user, msg = self.user_repository.verify_user(username, password)
+        user = self.user_repository.get_by_username(username)
+        # Check password if username exists
+        stored_hashed_password = user[1]
+        if not check_password_hash(stored_hashed_password, password):
+            msg = "Invalid password"
+            logging.error(msg)
+            return None, msg
+
+
+        # user, msg = self.user_repository.verify_user(username, password)
         if not user:
             msg = "Invalid user"
             logging.error(msg)

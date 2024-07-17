@@ -1,8 +1,7 @@
 
 import logging
 
-from database import connect_db, execute_query
-from werkzeug.security import check_password_hash
+from database import connect_db, insert, read
 
 class UserRepository:
     logging.basicConfig(level=logging.DEBUG)
@@ -11,23 +10,22 @@ class UserRepository:
         self.conn = conn
 
     def verify_user(self, username, password):
-        conn = self.conn
         query = 'SELECT * FROM users WHERE username = ?'    
         
         try:
-            user = execute_query(query, (username,))
+            success = read(query, (username,))
 
-            if not user:
+            if not success:
                 msg = "Username not found"
                 logging.error(msg)
                 return None, msg
 
-        # Check password if username exists
-            stored_hashed_password = user[1]
-            if not check_password_hash(stored_hashed_password, password):
-                msg = "Invalid password"
-                logging.error(msg)
-                return None, msg
+        # # Check password if username exists
+        #     stored_hashed_password = user[1]
+        #     if not check_password_hash(stored_hashed_password, password):
+        #         msg = "Invalid password"
+        #         logging.error(msg)
+        #         return None, msg
         
         except Exception as e:
             msg = "Error verifying user"
@@ -52,7 +50,7 @@ class UserRepository:
         query = 'INSERT INTO users (username, password) VALUES (?, ?)'
         
         try:
-            success = execute_query(query, (username, password))
+            success = insert(query, (username, password))
             if not success:
                 msg = "Error creating user"
                 logging.error(msg)

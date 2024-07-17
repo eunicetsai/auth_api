@@ -34,7 +34,36 @@ def create_user_table(conn):
 
     
 
-def execute_query(query, params=()):
+def read(query, params=()):
+    """Executes a query on the database connection and returns the fetched data or None.
+
+    Args:
+        query (str): The SQL query to execute.
+        params (tuple, optional): Parameters for the query. Defaults to ().
+
+    Returns:
+        A dictionary representing the fetched data (or None if connection fails or no row found).
+    """    
+    conn = connect_db()
+    if conn:
+        try:
+            with conn:
+                cursor = conn.cursor()
+                cursor.execute(query, params)
+                data = cursor.fetchone()
+                conn.commit()
+            return data
+        except Exception as e:
+            message = f"Error executing query: {e}"
+            logging.error(message)
+            return None
+
+    else:
+        logging.error("Failed to connect to database")
+        return False
+    
+    
+def insert(query, params=()):
     """Executes a query on the database connection and returns the fetched data or None.
 
     Args:
@@ -60,3 +89,5 @@ def execute_query(query, params=()):
     else:
         logging.error("Failed to connect to database")
         return False
+    
+    

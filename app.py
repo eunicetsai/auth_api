@@ -31,7 +31,7 @@ def verify_user():
 
         user, msg = user_service.verify_user(username, password)
         if not user:
-            return jsonify({"success": False, "reason": msg}), 400
+            return jsonify({"success": False, "reason": msg}), 401
         
         return jsonify({"success": bool(user), "reason": None}), 200            
 
@@ -48,7 +48,10 @@ def create_user():
         password = request.json['password']
     except KeyError:
         return jsonify({"success": False, "reason": "Missing required fields: username or password"}), 400
-
+    except Exception as e:
+        # Handle unexpected errors
+        return jsonify({'error': 'Internal server error'}), 500
+        
     # Call UserService to create the user
     success, message = user_service.create_user(username, password)
  
